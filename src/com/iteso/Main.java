@@ -6,10 +6,8 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        AFD afd = new AFD("sim1.txt");
+        AFD afd = new AFD("./simulations/sim2_4.txt");
         afd.simulate();
-
-//        System.out.println(Arrays.toString(afd.getAlphabet()));
     }
 
 }
