@@ -13,11 +13,13 @@ public class AFD {
     private int currentState;
     private String sequence = "";
 
+    // AFD constructor
     public AFD(String fileName) {
         pattern = new HashMap<>();
         setFileData(fileName);
     }
 
+    // Simulate AFD with data from file
     public void simulate() {
         sequence += currentState + "/";
         for (int i = 0; i < inputChain.length(); i++) {
@@ -27,8 +29,7 @@ public class AFD {
             // Find alphabet position to check in pattern
             int charPos = findAlphabetIndex(movement);
 
-            // Where to move
-//            currentState = Integer.parseInt(pattern.get(currentState)[charPos]);
+            // Move state
             currentState = Integer.parseInt(pattern.get(currentState)[charPos]);
             sequence += currentState + "/";
 
@@ -52,7 +53,6 @@ public class AFD {
             return -1;
         }
 
-        // find length of array
         int len = alphabet.length;
         int i = 0;
 
@@ -89,7 +89,7 @@ public class AFD {
                 else if (lineCounter == 2) setInitialState(line.charAt(0));
                 else if (lineCounter == 3) setFinalStates(splitLine(line));
                 else {
-                    setPattern(patternCounter, line);
+                    addPattern(patternCounter, line);
                     patternCounter++;
                 }
                 lineCounter++;
@@ -98,12 +98,6 @@ public class AFD {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void setPattern(int position, String textLine) {
-        String[] divided = textLine.split(";");
-
-        this.pattern.put(position, divided);
     }
 
     /**
@@ -116,6 +110,16 @@ public class AFD {
         return textLine.split(";");
     }
 
+    /**
+     * Add  pattern to hashmap of patterns
+     * @param position
+     * @param textLine
+     */
+    private void addPattern(int position, String textLine) {
+        String[] divided = textLine.split(";");
+
+        this.pattern.put(position, divided);
+    }
 
     public String getInputChain() {
         return inputChain;
