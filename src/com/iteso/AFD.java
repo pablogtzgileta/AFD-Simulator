@@ -1,22 +1,45 @@
 package com.iteso;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 public class AFD {
     private String inputChain;
+    private ArrayList<String> substrings = new ArrayList<>();
     private String[] alphabet;
     private char initialState;
     private String[] finalStates;
     private HashMap<Integer, String[]> pattern;
     private int currentState;
+    private int resetState;
     private String sequence = "";
 
     // AFD constructor
     public AFD(String fileName) {
         pattern = new HashMap<>();
         setFileData(fileName);
+    }
+
+    // Simulation of substrings
+    public void simulateSubstrings() {
+        String validSubstrings = "";
+        // Get all substrings from inputChain
+        getSubstrings();
+        //
+        for (int i = 0; i < substrings.size(); i++) {
+            if (simulateParameter(substrings.get(i))){
+                validSubstrings += substrings.get(i) + ", ";
+            }
+        }
+
+        System.out.println("Subcadenas");
+        if (validSubstrings.length() > 1) {
+            System.out.println(validSubstrings.substring(0, validSubstrings.length() - 2));
+        } else {
+            System.out.println(validSubstrings);
+        }
     }
 
     // Simulate AFD with data from file
@@ -45,9 +68,46 @@ public class AFD {
         }
     }
 
+    // Simulate AFD with data passed as parameter
+    private boolean simulateParameter(String chain) {
+//        System.out.println(initialState);
+        for (int i = 0; i < chain.length(); i++) {
+            // Get value from chain to check movement
+            char movement = chain.charAt(i);
+
+            // Find alphabet position to check in pattern
+            int charPos = findAlphabetIndex(movement);
+
+            // Move state
+            currentState = Integer.parseInt(pattern.get(currentState)[charPos]);
+
+            if (i == chain.length() - 1) {
+                if (Arrays.asList(finalStates).contains(String.valueOf(currentState))) {
+                    currentState = resetState;
+                    return true;
+                } else {
+                    currentState = resetState;
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    private void getSubstrings() {
+        for (int i = 0; i < inputChain.length(); i++) {
+            for (int j = i + 1; j <= inputChain.length(); j++) {
+                if (!substrings.contains(inputChain.substring(i, j))) {
+                    substrings.add(inputChain.substring(i, j));
+                }
+            }
+        }
+    }
+
     // Linear-search function to find the index of an element
-    public int findAlphabetIndex(char t)
-    {
+    public int findAlphabetIndex(char t) {
         // if array is Null
         if (alphabet == null) {
             return -1;
@@ -63,8 +123,7 @@ public class AFD {
             // then return the index
             if (alphabet[i].equals(String.valueOf(t))) {
                 return i;
-            }
-            else {
+            } else {
                 i = i + 1;
             }
         }
@@ -112,6 +171,7 @@ public class AFD {
 
     /**
      * Add  pattern to hashmap of patterns
+     *
      * @param position
      * @param textLine
      */
@@ -144,6 +204,7 @@ public class AFD {
     public void setInitialState(char initialState) {
         this.initialState = initialState;
         this.currentState = initialState - '0';
+        this.resetState = initialState - '0';
     }
 
     public String[] getFinalStates() {
