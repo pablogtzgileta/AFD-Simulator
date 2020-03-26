@@ -27,7 +27,8 @@ public class AFD {
         String validSubstrings = "";
         // Get all substrings from inputChain
         getSubstrings();
-        //
+
+        // Cycle substrings to simulate them, only print valid ones
         for (int i = 0; i < substrings.size(); i++) {
             if (simulateParameter(substrings.get(i))){
                 validSubstrings += substrings.get(i) + ", ";
